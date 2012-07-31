@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Runtime
+Bundle-SymbolicName: cc.iqa.runtime
+Bundle-Version: 1.0.0
+Bundle-ClassPath: .
+Export-Package: cc.iqa.core,
+ cc.iqa.iquery,
+ cc.iqa.regexp,
+ cc.iqa.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.antlr.runtime;bundle-version="1.0.0"
