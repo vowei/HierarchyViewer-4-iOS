@@ -1,4 +1,4 @@
 HierarchyViewer-4-iOS
 =====================
 
-A iQuery editor for iOS.
+HierarchyViewer for iOS
