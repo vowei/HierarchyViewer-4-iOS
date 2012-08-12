@@ -1,22 +1,18 @@
 /*
- * Copyright (C) 2008 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (c) Shanghai Zhiping Technology Co.,Limited
+ * Author: Binhua Liu
+ * Web Site: www.vowei.com
+ * License: GPL v3 (http://www.gnu.org/copyleft/gpl.html)
+ * A Part of source code come from "Android Open Source Project" 
  */
+
 
 package hierarchyviewerlib.common;
 
 import org.eclipse.swt.graphics.Image;
+
+import cc.iqa.iquery.IProperty;
+import cc.iqa.iquery.ITreeNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class ViewNode {
+public class ViewNode implements ITreeNode {
 
     //public static enum ProfileRating {
     //    RED, YELLOW, GREEN, NONE
@@ -123,6 +119,8 @@ public class ViewNode {
     public boolean filtered;
 
     public int protocolVersion;
+    
+    public String descriptionStr="";
 
     public ViewNode()
     {
@@ -354,10 +352,10 @@ public class ViewNode {
 
     @Override
     public String toString() {
-        return type; //+ "@" + hashCode; //$NON-NLS-1$
+        return this.descriptionStr; //+ "@" + hashCode; //$NON-NLS-1$
     }
 
-    public static class Property {
+    public static class Property implements IProperty {
         public String name;
 
         public String value;
@@ -366,6 +364,86 @@ public class ViewNode {
         public String toString() {
             return name + '=' + value;
         }
+
+		@Override
+		public String getName() {
+			return this.name;
+		}
+
+		@Override
+		public String getValue() {
+			return this.value;
+		}
     }
+
+	@Override
+	public boolean containsProperty(String arg0) {
+		return this.namedProperties.containsKey(arg0);
+	}
+
+	@Override
+	public List<ITreeNode> getChildren() {
+		List<ITreeNode> treeNodeList =new ArrayList<ITreeNode>();
+		// for(ITreeNode treeNode:this.getChildren())
+		for(ITreeNode treeNode:this.children)
+		{
+			treeNodeList.add(treeNode);
+		}
+		return treeNodeList;
+	}
+
+	@Override
+	public String getName() {
+		if(this.namedProperties.containsKey("name"))
+		{
+			return this.namedProperties.get("name").value;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	@Override
+	public ITreeNode getParent() {
+		return this.parent;
+	}
+
+	@Override
+	public IProperty getProperty(String arg0) {
+		if(!this.namedProperties.containsKey(arg0))
+		{
+			return null;
+		}
+		return this.namedProperties.get(arg0);
+	}
+
+	@Override
+	public String getType() {
+		if(this.namedProperties.containsKey("type"))
+		{
+			return this.namedProperties.get("type").value;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	@Override
+	public String getText() {
+		if(this.namedProperties.containsKey("value"))
+		{
+			return this.namedProperties.get("value").value;
+		}
+		else if(this.namedProperties.containsKey("name"))
+		{
+			return this.namedProperties.get("name").value;
+		}
+		else
+		{
+			return null;
+		}
+	}
     
 }

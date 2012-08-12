@@ -1,17 +1,9 @@
 /*
- * Copyright (C) 2010 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (c) Shanghai Zhiping Technology Co.,Limited
+ * Author: Binhua Liu
+ * Web Site: www.vowei.com
+ * License: GPL v3 (http://www.gnu.org/copyleft/gpl.html)
+ * A Part of source code come from "Android Open Source Project" 
  */
 
 package hierarchyviewerlib.uicomponents;
@@ -44,7 +36,6 @@ import org.eclipse.swt.widgets.TreeColumn;
 import hierarchyviewerlib.common.ClipboardHelper;
 import hierarchyviewerlib.common.ViewNode;
 import hierarchyviewerlib.common.ViewNode.Property;
-import hierarchyviewerlib.controllers.ViewInteractionController.IViewInteractionListener;
 import hierarchyviewerlib.controllers.iQueryController;
 import hierarchyviewerlib.models.TreeViewModel;
 import hierarchyviewerlib.models.TreeViewModel.ITreeChangeListener;
@@ -55,7 +46,7 @@ import java.util.ArrayList;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 
-public class PropertyViewer extends Composite implements ITreeChangeListener,IViewInteractionListener{
+public class PropertyViewer extends Composite implements ITreeChangeListener {
     private TreeViewModel mModel;
 
     private TreeViewer mTreeViewer;
@@ -235,7 +226,7 @@ public class PropertyViewer extends Composite implements ITreeChangeListener,IVi
         FontData[] fontData = systemFont.getFontData();
         FontData[] newFontData = new FontData[fontData.length];
         for (int i = 0; i < fontData.length; i++) {
-            newFontData[i] = new FontData(fontData[i].getName(), 14, fontData[i].getStyle());
+            newFontData[i] = new FontData(fontData[i].getName(), 12, fontData[i].getStyle());
         }
         mSmallFont = new Font(Display.getDefault(), newFontData);
     }
@@ -307,18 +298,9 @@ public class PropertyViewer extends Composite implements ITreeChangeListener,IVi
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			IStructuredSelection selection = (IStructuredSelection)mTreeViewer.getSelection(); 
-			String str="";
 			if (selection != null) { 
 				Property p =(Property)selection.getFirstElement();
-				if(p.name.equals(":path"))
-				{
-					str=p.value;
-				}
-				else
-				{
-					str=String.format("[%s = '%s']", p.name,p.value);
-				}
-				ClipboardHelper.setClipboard(str);
+				ClipboardHelper.setClipboard(p.value);
 			}
 		}
 
@@ -365,9 +347,28 @@ public class PropertyViewer extends Composite implements ITreeChangeListener,IVi
 			String str="";
 			if (selection != null) { 
 				Property p =(Property)selection.getFirstElement();
-				if(p.name.equals(":path"))
+				ViewNode selectedViewNode=TreeViewModel.getModel().getSelection().viewNode;
+						
+				if(p.name.equals(":path")||p.name.equals("type"))
 				{
 					str=p.value;
+				}
+				else if(p.name.equals(":index"))
+				{
+					str=selectedViewNode.getType() +" :eq("+p.value+")";
+				}
+				else if(p.name.equals(":elementIndex"))
+				{
+					str=":eq("+p.value+")";
+				}
+				else if(p.name.equals(":left")||p.name.equals(":top")||p.name.equals(":right")
+						||p.name.equals(":bottom")||p.name.equals(":width")||p.name.equals(":height"))
+				{
+					str=String.format("[%s = %s]", p.name,p.value);
+				}
+				else if(p.name.equals("rect"))
+				{
+					
 				}
 				else
 				{
@@ -381,12 +382,5 @@ public class PropertyViewer extends Composite implements ITreeChangeListener,IVi
 	@Override
 	public void logfileChanged() {
 		//pass 
-	}
-
-	@Override
-	public void interactionTaskSubmited(String taskName, Object value) {
-		if(taskName.equalsIgnoreCase("Font"));
-		int font = (Integer) value;
-		
 	}
 }

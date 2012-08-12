@@ -152,7 +152,7 @@
          </property>
          <property
                name="aboutText"
-               value="Copyright © 2012 Zhiping Inc. All rights reserved.&#x0A;github: http://github.com/vowei/HierarchyViewer-4-iOS&#x0A;website: http://www.vowei.com">
+               value="Copyright © 2012 Zhiping Technology Co., Limited All rights reserved.&#x0A;Version:1.0.0&#x0A;github: http://github.com/vowei/HierarchyViewer-4-iOS&#x0A;website: http://www.vowei.com">
          </property>
       </product>
    </extension>

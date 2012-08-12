@@ -3,52 +3,75 @@
 <Configuration>
 	<iQuery>
 		<Element name="*" description="选取所有的控件" />
+		<Element name="&gt;" description='选取所有子控件' />
+		<Element name="&gt;num" description='选取num层内的所有子孙控件' />
+		<Element name="&gt;&gt;" description='选取所有子孙控件' />
+		<Element name="+" description='选取节点的下一个兄弟节点控件。' />
+		<Element name="~" description='选取节点除自身外的所有兄弟节点控件。' />
 		<Element name="[attribute *= 'value']" description="选取属性值包含指定字符串的控件" />
 		<Element name="[attribute = 'value']" description="选取属性值等于指定字符串的控件" />
+		<Element name="[attribute $= 'value']" description="选取属性值以指定字符串结尾的控件" />
+		<Element name="[attribute ^= 'value']" description="选取属性值以指定字符串开头的控件" />
 		<Element name="[attribute != 'value']" description="选取不包含属性或者属性值不等于指定字符串的控件" />
+		<Element name="[attribute = value]" description="选取属性值等于指定值的控件，支持与浮点数，整数和百分数的比较。" />
+		<Element name="[attribute &gt; value]" description="选取属性值大于指定值，支持与浮点数，整数和百分数的比较。" />
+		<Element name="[attribute &lt; value]" description="选取属性值小于指定值，支持与浮点数，整数和百分数的比较。" />
+		<Element name="[attribute &gt;= value]" description="选取属性值大于或等于指定值，支持与浮点数，整数和百分数的比较。" />
+		<Element name="[attribute &lt;= value]" description="选取属性值小于或等于指定值，支持与浮点数，整数和百分数的比较。" />
 		<Element name='[attribute]' description='选择拥有属性"attribute"的控件' />
-		<Element name='&gt;' description='在"parent"控件里选取所有由"child"指定的控件' />
-		<Element name='&gt;&gt;' description='在"parent"控件里选取所有的的子孙节点控件' />
-		<Element name='element' description='根据控件的类型名选取控件，例如 TextView等。' />
-		<Element name='button' description="选取所有的按钮控件" />
-		<Element name='checkbox' description="选取所有的复选框控件" />
-		<Element name='radiobox' description="选取所有的单选框控件" />
-		<Element name='textbox' description="选取所有的文本框控件" />
-		<Element name='label' description="选取所有的标签控件" />
-		<Element name='image' description='选择所有的图片控件' />
-		<Element name=':checked' description="选取所有勾选的控件" />
-		<Element name=':eq(index)' description='按照索引好选取控件' />
-		<Element name=':gt(index)' description='选择索引号大于index的所有控件' />
-		<Element name=':lt(index)' description='选择索引好小于index的所有控件' />
-		<Element name=':nth-child(index)' description='选择第几个子控件' />
-		<Element name=':contains(text)' description='选取控件文本上包含指定"text"的控件' />
-		<Element name=':enabled' description='选取所有可用的控件' />
-		<Element name=':disabled' description='选取所有禁用的控件' />
+		<Element name='#name' description='在子孙控件里根据控件name选择子控件' />
+		<Element name=':eq(index)' description='选择索引号等于index的控件,索引从0开始' />
+		<Element name=':gt(index)' description='选择索引号大于index的所有控件,索引从0开始' />
+		<Element name=':lt(index)' description='选择索引号小于index的所有控件,索引从0开始' />
+		<Element name=':nth-child(index)' description='选择第index个子控件，索引从1开始' />
+		<Element name=':not' description='反选selector匹配的控件' />
+		<Element name=":contains('text')" description='选取界面文本包含指定字符串的控件' />
+		<Element name='ELEMENT' description='根据控件的类型名选取控件，例如 TextView等。' />
+		<Element name=':button' description="选取所有的按钮控件" />
+		<Element name=':checkbox' description="选取所有的复选框控件" />
+		<Element name=':radio' description="选取所有的单选框控件" />
+		<Element name=':text' description="选取所有的文本框控件" />
+		<Element name=':label' description="选取所有的标签控件" />
+		<Element name=':image' description='选择所有的图片控件' />
+		<Element name=':enabled' description='选取所有可用的控件' supported='false'/>
+		<Element name=':disabled' description='选取所有禁用的控件' supported='false'/>
 		<Element name=':first-child' description='选择第一个子控件' />
 		<Element name=':last-child' description='选择最后一个子控件' />
-		<Element name=':first' description='选择第一个匹配的控件' />
+		<Element name=':first' description='选择匹配控件集里的第一个控件' />
 		<Element name=':last' description='选择匹配控件集里的最后一个控件' />
-		<Element name=':focus' description='选择当前有输入焦点的控件' />
-		<Element name=':has(selector)' description='选择拥有selector匹配的子控件的控件' />
-		<Element name=':hidden' description='选择所有的不可见的控件' />
-		<Element name=':visible' description='选择所有的可见控件' />
-		<Element name=':not' description='反选selector匹配的控件' />
-		<Element name=':parent' description='选择父控件' />
+		<Element name=':empty' description='选择没有子控件的控件' />
+		<Element name=':parent' description=' 选择匹配控件的父控件' />
+		<Element name=':focus' description='选择当前有输入焦点的控件'  supported='false'/>
+		<Element name=':hidden' description='选择所有的不可见的控件'  supported='false'/>
+		<Element name=':visible' description='选择所有的可见控件' supported='false'/>
 	</iQuery>
 	<UIElements>
-		<Element name ="UIANavigationBar" function="navigationBar" type="Object"/>
+		<Element name ="UIANavigationBar" function="navigationBars" type="Array"/>
+		<Element name ="UIAToolbar" function="toolbars" type="Array"/>
 		<Element name ="UIAWindow" function="windows" type="Array"/>
 		<Element name ="UIAButton" function="buttons" type="Array"/>
 		<Element name ="UIATextField" function="textFields" type="Array"/>
-		<Element name ="UIAStaticText" function="staticTexts" type="Array"/>
+		<Element name ="UIATextView" function="textViews" type="Array"/>
 		<Element name ="UIAImage" function="images" type="Array"/>
 		<Element name ="UIASlider" function="sliders" type="Array"/>
+		<Element name ="UIAScrollView" function="scrollViews" type="Array"/>
+		<Element name ="UIASecureTextField" function="secureTextFields" type="Array"/>
+		<Element name ="UIAStaticText" function="staticTexts" type="Array"/>
+		<Element name ="UIASearchBar" function="searchBars" type="Array"/>
+		<Element name ="UIASwitch" function="switchs" type="Array"/>
+		<Element name ="UIASegmentedControl" function="segmentedControls" type="Array"/>
 		<Element name ="UIAPicker" function="pickers" type="Array"/>
 		<Element name ="UIAPickerWheel" function="wheels" type="Array"/>
+		<Element name ="UIAPageIndicator" function="pageIndicators" type="Array"/>
+		<Element name ="UIAPopover" function="popover" type="Object"/>
+		<Element name ="UIAProgressIndicator" function="progressIndicators" type="Array"/>
 		<Element name ="UIATableView" function="tableViews" type="Array"/>
 		<Element name ="UIATableGroup" function="groups" type="Array"/>
 		<Element name ="UIAElement" function="elements" type="Array"/>
 		<Element name ="UIATableCell" function="cells" type="Array"/>
-		<Element name ="UIASwitch" function="switchs" type="Array"/>
+		<Element name ="UIAWebView" function="webViews" type="Array"/>
+		<Element name ="UIATabBar" function="tabBars" type="Array"/>
+		<Element name ="UIAActivityIndicator" function="activityIndicators" type="Array"/>
+		<Element name ="UIALink" function="links" type="Array"/>
 	</UIElements>
 </Configuration>

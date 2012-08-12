@@ -1,17 +1,9 @@
 /*
- * Copyright (C) 2010 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (c) Shanghai Zhiping Technology Co.,Limited
+ * Author: Binhua Liu
+ * Web Site: www.vowei.com
+ * License: GPL v3 (http://www.gnu.org/copyleft/gpl.html)
+ * A Part of source code come from "Android Open Source Project" 
  */
 
 package hierarchyviewerlib.uicomponents;
@@ -31,15 +23,19 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Transform;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.ToolTip;
 
 import hierarchyviewerlib.actions.CopyFunctionCallByIndexAction;
 import hierarchyviewerlib.actions.CopyFunctionCallByNameAction;
 import hierarchyviewerlib.common.ViewNode;
 import hierarchyviewerlib.controllers.ViewInteractionController;
+import hierarchyviewerlib.controllers.ViewInteractionController.IViewInteractionListener;
 import hierarchyviewerlib.models.TreeViewModel;
 import hierarchyviewerlib.models.TreeViewModel.ITreeChangeListener;
 import hierarchyviewerlib.uiutilities.DrawableViewNode;
@@ -47,8 +43,9 @@ import hierarchyviewerlib.uiutilities.DrawableViewNode.Point;
 
 import java.util.ArrayList;
 import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.ui.PlatformUI;
 
-public class LayoutViewer extends Canvas implements ITreeChangeListener {
+public class LayoutViewer extends Canvas implements ITreeChangeListener,IViewInteractionListener {
 
     private TreeViewModel mModel;
 
@@ -68,12 +65,15 @@ public class LayoutViewer extends Canvas implements ITreeChangeListener {
 
     private boolean mOnBlack = true;
     
+    private ToolTip mToolTip;
+    
     private MenuManager menuManager =new MenuManager("#PopUpMenu");
 
     public LayoutViewer(Composite parent) {
         super(parent, SWT.NONE);
         mModel = TreeViewModel.getModel();
         mModel.addTreeChangeListener(this);
+        ViewInteractionController.getController().addViewInteractionListener(this);
 
         addDisposeListener(mDisposeListener);
         addPaintListener(mPaintListener);
@@ -87,6 +87,11 @@ public class LayoutViewer extends Canvas implements ITreeChangeListener {
         treeChanged();
         
         createContextMenu();
+        
+        Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+        mToolTip = new ToolTip(shell,
+                SWT.BALLOON );//SWT.ICON_INFORMATION
+        mToolTip.setAutoHide(true); //自动隐藏气泡式提示文本
     }
 
     public void setShowExtras(boolean show) {
@@ -432,5 +437,35 @@ public class LayoutViewer extends Canvas implements ITreeChangeListener {
 	@Override
 	public void logfileChanged() {
 		//pass
+	}
+
+	@Override
+	public void interactionTaskSubmited(String taskName, Object value) {
+		final Control thisControl=this;
+		if(taskName.equalsIgnoreCase("NodeViewTooltip"))
+		{
+			final ViewNode viewNode=(ViewNode)value;
+			Display.getDefault().syncExec(new Runnable() {
+	            public void run() {
+	                synchronized (this) {
+	                	String message=viewNode.descriptionStr;
+	                	float centerX=viewNode.left+viewNode.width/2;
+	                	float centerY=viewNode.top+viewNode.height/2;
+	                	float[] pt=new float[]{centerX,centerY};
+	                	mTransform.transform(pt);
+	                	org.eclipse.swt.graphics.Point nodePoint=new org.eclipse.swt.graphics.Point((int)pt[0], (int)pt[1]);
+	                	org.eclipse.swt.graphics.Point controlPoint = thisControl.toDisplay(0, 0);
+	                	org.eclipse.swt.graphics.Point displayPoint=
+	                			new org.eclipse.swt.graphics.Point(nodePoint.x+controlPoint.x,nodePoint.y+controlPoint.y);
+	                	
+	                       //设置提示信息
+	                       mToolTip.setMessage(message);
+	                       mToolTip.setLocation(displayPoint);
+	                       mToolTip.setVisible(true);
+	                }
+	            }
+	        });
+		}
+		
 	}
 }

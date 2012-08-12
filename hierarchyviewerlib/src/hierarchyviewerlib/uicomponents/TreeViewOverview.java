@@ -1,27 +1,12 @@
 /*
- * Copyright (C) 2010 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (c) Shanghai Zhiping Technology Co.,Limited
+ * Author: Binhua Liu
+ * Web Site: www.vowei.com
+ * License: GPL v3 (http://www.gnu.org/copyleft/gpl.html)
+ * A Part of source code come from "Android Open Source Project" 
  */
 
 package hierarchyviewerlib.uicomponents;
-
-/*import com.android.ddmuilib.ImageLoader;
-import com.android.hierarchyviewerlib.models.TreeViewModel;
-import com.android.hierarchyviewerlib.models.TreeViewModel.ITreeChangeListener;
-import com.android.hierarchyviewerlib.ui.util.DrawableViewNode;
-import com.android.hierarchyviewerlib.ui.util.DrawableViewNode.Point;
-import com.android.hierarchyviewerlib.ui.util.DrawableViewNode.Rectangle;*/
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;

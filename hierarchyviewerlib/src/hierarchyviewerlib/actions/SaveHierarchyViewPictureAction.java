@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) Shanghai Zhiping Technology Co.,Limited
+ * Author: Binhua Liu
+ * Web Site: www.vowei.com
+ * License: GPL v3 (http://www.gnu.org/copyleft/gpl.html)
+ */
+
 package hierarchyviewerlib.actions;
 
 import org.eclipse.jface.action.Action;
@@ -45,7 +52,7 @@ public class SaveHierarchyViewPictureAction extends Action {
 		ImageLoader loader =captureControl();
 		
 		Shell shell=window.getWorkbench().getActiveWorkbenchWindow().getShell();
-		FileDialog fileDialog = new FileDialog(shell);
+		FileDialog fileDialog = new FileDialog(shell,SWT.SAVE);
 		fileDialog.setText("保存控件层次图");
 		fileDialog.setFilterExtensions(new String[] { "*.png","*.bmp","*.jpg","*.gif"});
 		fileDialog.setFilterNames(new String[] { "PNG(*.png)","Bitmap(*.bmp)","JPEG(*.jpg),", "GIF(*.gif)" });

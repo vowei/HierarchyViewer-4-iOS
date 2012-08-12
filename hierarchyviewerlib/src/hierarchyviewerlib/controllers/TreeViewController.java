@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) Shanghai Zhiping Technology Co.,Limited
+ * Author: Binhua Liu
+ * Web Site: www.vowei.com
+ * License: GPL v3 (http://www.gnu.org/copyleft/gpl.html)
+ */
+
 package hierarchyviewerlib.controllers;
 
 import java.util.Map;
@@ -76,7 +83,7 @@ public class TreeViewController {
 				{
 					if(currentNode.namedProperties.containsKey("name"))
 					{
-						currentFunctionCall=elementInfo.jsFunctionName+"(\""+currentNode.namedProperties.get("name").value+"\")";
+						currentFunctionCall=elementInfo.jsFunctionName+"()[\""+currentNode.namedProperties.get("name").value+"\"]";
 					}
 					else
 					{

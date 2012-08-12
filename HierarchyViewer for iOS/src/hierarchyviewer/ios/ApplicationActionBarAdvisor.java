@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) Shanghai Zhiping Technology Co.,Limited
+ * Author: Binhua Liu
+ * Web Site: www.vowei.com
+ * License: GPL v3 (http://www.gnu.org/copyleft/gpl.html)
+ */
+
 package hierarchyviewer.ios;
 
 import hierarchyviewerlib.actions.OpenLogFileAction;
@@ -98,7 +105,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     
     protected void fillMenuBar(IMenuManager menuBar) {
         MenuManager fileMenu = new MenuManager("&文件", IWorkbenchActionConstants.M_FILE);
-        MenuManager toolMenu = new MenuManager("&工具", IWorkbenchActionConstants.M_VIEW);
+        MenuManager toolMenu = new MenuManager("&工具", IWorkbenchActionConstants.M_NAVIGATE);
         MenuManager windowMenu = new MenuManager("&窗口", IWorkbenchActionConstants.M_WINDOW);
         MenuManager helpMenu = new MenuManager("&帮助", IWorkbenchActionConstants.M_HELP);
         

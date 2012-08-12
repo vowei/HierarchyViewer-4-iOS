@@ -41,9 +41,10 @@ import cc.iqa.iquery.*;
 @parser::members {
 private static final Logger _logger = 
     Logger.getLogger(iQueryParser.class.getPackage().getName());
-private StringBuilder _indentBuilder = new StringBuilder();
 private boolean _debug = false;
 private List<String> _errors = null;
+private Map<String, IPseudoAttribute> _pseudoAttrs = new HashMap<String, IPseudoAttribute>();
+private Map<String, IPseudoClass> _pseudoClasses = new HashMap<String, IPseudoClass>();
 
 public iQueryParser(TokenStream input, List<String> errors, boolean debug) {
     this(input);
@@ -62,6 +63,22 @@ public String getErrorMessage(RecognitionException e,
     }
  
     return error;
+}
+
+public void registerPseudoClass(String name, IPseudoClass func) {
+    if ( !_pseudoClasses.containsKey(name) ) {
+        _pseudoClasses.put(name, func);
+    } else { 
+        throw new IllegalArgumentException("伪类：[" + name + "]已经存在了！");
+    }
+}
+
+public void registerPseudoAttribute(String name, IPseudoAttribute func) {
+    if ( !_pseudoAttrs.containsKey(name) ) {
+        _pseudoAttrs.put(name, func);
+    } else {
+        throw new IllegalArgumentException("伪属性：[" + name + "]已经存在了！");
+    }
 }
 
 public List<String> getErrors() { 
@@ -117,8 +134,43 @@ private List<ITreeNode> descendants(ITreeNode anscent, int maxLevel) {
     return result;
 }
 
+private List<ITreeNode> next(List<ITreeNode> candidates, List<ITreeNode> prevs) {
+    List<ITreeNode> results = new ArrayList<ITreeNode>();
+
+    for ( int i = 0; i < prevs.size(); ++i ) {
+        int idx = candidates.indexOf(prevs.get(i));
+        if ( idx >= 0 && (idx < candidates.size() - 1) ) {
+            if ( results.indexOf(candidates.get(idx + 1)) < 0 ) {
+                results.add(candidates.get(idx + 1));
+            }
+        }
+    }
+
+    return results;
+}
+
+private List<ITreeNode> siblings(List<ITreeNode> candidates, List<ITreeNode> prevs) {
+    List<ITreeNode> results = new ArrayList<ITreeNode>();
+
+    if ( prevs.size() > candidates.size() ) 
+        throw new IllegalStateException("在siblings函数里，prevs元素集合的个数应该小于candidates元素的个数！");
+
+    for ( int i = 0; i < prevs.size(); ++i ) {
+        int idx = candidates.indexOf(prevs.get(i));
+        while ( idx >= 0 && (idx < candidates.size() - 1) ) {
+            idx++;
+            if ( results.indexOf(candidates.get(idx)) < 0 ) {
+                results.add(candidates.get(idx));
+            }
+        }
+    }
+
+    return results;
+}
+
 private String type(ITreeNode node) {
-    String name = node.getName();
+    // String name = node.getName();
+    String name = node.getType();
     int endIdx = name.indexOf('@');
     if ( endIdx == -1 )
             endIdx = name.length();
@@ -130,163 +182,57 @@ private String type(ITreeNode node) {
     return name.substring(startIdx + 1, endIdx).replace('$', '.');
 }
 
-private List<ITreeNode> filterByNameStartsWith(List<ITreeNode> candidates, String ... criterias){
+private List<ITreeNode> filterPseudo(List<ITreeNode> candidates, String pseudoClass) {
     if ( candidates == null ) 
         return new ArrayList<ITreeNode>();
-
-    List<ITreeNode> result = new ArrayList<ITreeNode>();
-    for ( int i = 0; i < candidates.size(); ++i ) {
-        ITreeNode node = candidates.get(i);
-        String name = type(node);
-        if ( name != null ) {
-            for (int j = 0; j < criterias.length; ++j ) {
-                if ( name.startsWith(criterias[j]) ) {
-                    result.add(node);
-                    break;
-                }
-            }
-        }
+    if ( !_pseudoClasses.containsKey(pseudoClass) ) {
+        throw new IllegalStateException("无法处理的伪类：[" + pseudoClass + "]");
     }
 
-    return result;
-}
-
-private List<ITreeNode> filterByNameEndsWith(List<ITreeNode> candidates, String ... criterias){
-    if ( candidates == null ) 
-        return new ArrayList<ITreeNode>();
-
+    IPseudoClass func = _pseudoClasses.get(pseudoClass);
     List<ITreeNode> result = new ArrayList<ITreeNode>();
     for ( int i = 0; i < candidates.size(); ++i ) {
         ITreeNode node = candidates.get(i);
-        String name = type(node);
-        if ( name != null ) {
-            for (int j = 0; j < criterias.length; ++j ) {
-                if ( name.endsWith(criterias[j]) ) {
-                    result.add(node);
-                    break;
-                }
-            }
+        if ( func.resolve(node) ) {
+            result.add(node);
         }
     }
-
+     
     return result;
-}
-
-private List<ITreeNode> filterByAttributes(List<ITreeNode> candidates, String ... attributes) {
-    if ( candidates == null )
-        return new ArrayList<ITreeNode>();
-
-    // 对于:text元条件，我们就认为所有包含mText属性的控件都是Text
-    List<ITreeNode> result = new ArrayList<ITreeNode>();
-    for ( int i = 0; i < candidates.size(); ++i ) {
-        ITreeNode node = candidates.get(i);
-        boolean isMatched = true;
-        for ( int j = 0; j < attributes.length; ++j ) {
-            String key = attributes[j];
-
-            if ( !node.containsProperty(key) ) {
-                isMatched = false;
-                break;
-            }
-        }
-
-        if ( isMatched ) 
-            result.add(node);
-    }             
-    
-    return result;
-}
-
-private List<ITreeNode> filterByAttributes(List<ITreeNode> candidates, Map<String, String> attributes) {
-    if ( candidates == null )
-        return new ArrayList<ITreeNode>();
-
-    // 对于:text元条件，我们就认为所有包含mText属性的控件都是Text
-    List<ITreeNode> result = new ArrayList<ITreeNode>();
-    for ( int i = 0; i < candidates.size(); ++i ) {
-        ITreeNode node = candidates.get(i);
-        boolean isMatched = true;
-        for ( Map.Entry<String, String> entry : attributes.entrySet() ) {
-            if ( !node.containsProperty(entry.getKey()) ) {
-                isMatched = false;
-                break;
-            }
-
-            IProperty property = node.getProperty(entry.getKey());
-            if ( property == null ||
-                 property.getValue().compareTo(entry.getValue()) != 0 ) {
-                isMatched = false;
-                break;
-            }
-        }
-
-        if ( isMatched ) 
-            result.add(node);
-    }             
-    
-    return result;
-}
-
-private List<ITreeNode> filterByExcludingAttributes(List<ITreeNode> candidates, 
-                                                         Map<String, String> attributes) {
-    if ( candidates == null )
-        return new ArrayList<ITreeNode>();
-
-    List<ITreeNode> result = new ArrayList<ITreeNode>();
-    for ( int i = 0; i < candidates.size(); ++i ) {
-        ITreeNode node = candidates.get(i);
-        boolean isMatched = false;
-        for ( Map.Entry<String, String> entry : attributes.entrySet() ) {
-            if ( !node.containsProperty(entry.getKey()) ) {
-                isMatched = true;
-                break;
-            }
-
-            IProperty property = node.getProperty(entry.getKey());
-            if ( property == null ||
-                 property.getValue().compareTo(entry.getValue()) != 0 ) {
-                isMatched = true;
-                break;
-            }
-        }
-
-        if ( isMatched ) 
-            result.add(node);
-    }             
-    
-    return result;
-}
-
-private String indent(String message) {
-    return _indentBuilder.toString() + message;
 }
 
 private void debug(String message) {    
     if ( _debug ) {
-        _logger.info(indent(message));
+        _logger.info(message);
     }
 }
 
 private void verbose(String message) { 
     if ( _debug ) {
-        _logger.info(indent(message));
+        _logger.info(message);
     }
 }
 
 private void warning(String message) {
-    _logger.warning(_debug ? indent(message) : message);
+    if ( _debug ) {
+        _logger.warning(message);
+    }
 }
 
-private void increaseIndent() {
-    _indentBuilder.append(' ');
+private double parseNum(String value) {
+    if ( value == null || value.length() == 0 ) 
+        throw new IllegalArgumentException("value");
+
+    boolean isPercentage = value.charAt(value.length() - 1) == '\u0025';
+    if ( isPercentage ) {
+        return Double.parseDouble(value.substring(0, value.length() - 1)) / 100;
+    } else { 
+        return Double.parseDouble(value);
+    }
+}
 }
 
-private void descreaseIndent() {
-    _indentBuilder.deleteCharAt(_indentBuilder.length() - 1);
-}
-}
-
-prog [List<ITreeNode> candidates] returns [List<ITreeNode> survival]  
+query [List<ITreeNode> candidates] returns [List<ITreeNode> survival]  
     : selectors[$candidates] NEWLINE* EOF
         { 
             if ( $selectors.survival != null && (_errors == null || _errors.size() == 0) ) {
@@ -302,7 +248,7 @@ prog [List<ITreeNode> candidates] returns [List<ITreeNode> survival]
     ;
 
 selectors [List<ITreeNode> candidates] returns [List<ITreeNode> survival] 
-    : p=selector[$candidates] (c=multi_selectors[$c.survival == null ? $p.survival : $c.survival])*
+    : p=multi_selectors[$candidates] (c=multi_selectors[$c.survival == null ? $p.survival : $c.survival])*
         {
             if ( $c.survival != null ) {
                 $survival = $c.survival; 
@@ -321,33 +267,47 @@ multi_selectors [List<ITreeNode> candidates] returns [List<ITreeNode> survival]
         {
             debug("成功匹配\"> " + $selector.text + "\"");
             $survival = $c.survival;
-            descreaseIndent();
         }
-    | '>' level=DIGIT+ c=selector[descendants($candidates, Integer.parseInt($level.text))]
+    | '>' level=INTEGER c=selector[descendants($candidates, Integer.parseInt($level.text))]
         {
             debug("成功匹配\">" + $level.text + " " + $selector.text + "\"");
             $survival = $c.survival;
-            descreaseIndent();
         }
         // 支持对多个节点的子孙进行查询匹配
     | DESCENDANT c=selector[descendants($candidates, -1)]
         {
             debug("成功匹配\">> " + $selector.text + "\"");
             $survival = $c.survival;
-            descreaseIndent();
         }
     ;
 
 selector [List<ITreeNode> candidates] returns [List<ITreeNode> survival] 
-    : selector_expression[$candidates]
-        {
-            increaseIndent();
-            $survival = $selector_expression.survival; 
+    : p=selector_expression[$candidates] 
+        (
+            ('+' n=selector_expression[next($candidates, $p.survival)])
+        |
+            ('~' n=selector_expression[siblings($candidates, $p.survival)])
+        )?
+
+        {    
+            if ( $n.survival != null ) {
+                $survival = $n.survival;
+            } else {
+                $survival = $p.survival;
+            }
         }
     | multi_attributes[$candidates]
         {
             $survival = $multi_attributes.survival;
         }
+    ;
+
+num_comp_op
+    : '>'
+    | '<'
+    | '>='
+    | '<='
+    | '='
     ;
 
 multi_attributes [List<ITreeNode> candidates] returns [List<ITreeNode> survival] 
@@ -394,6 +354,149 @@ multi_attributes [List<ITreeNode> candidates] returns [List<ITreeNode> survival]
                         if ( value != null && value.startsWith(criteria) ) {
                             result.add(node);
                         }
+                    } else if ( optext.compareTo("*=") == 0 ) {
+                        if ( value != null && value.indexOf(criteria) >= 0 ) {
+                            result.add(node);
+                        }
+                    }
+                } else if ( optext.compareTo("!=") == 0 ) {
+                    result.add(node);
+                }
+            }
+
+            $survival = result;
+        }
+    | '[' ':' attr=ELEMENT op v=QUOTED_STRING ']'
+        {
+            List<ITreeNode> result = new ArrayList<ITreeNode>();
+
+            if ( _pseudoAttrs.containsKey($attr.text) ) {
+                String optext = $op.text;
+                String vtext = $v.text;
+                String criteria = vtext.substring(1, vtext.length() - 1);
+                
+                for ( int i = 0; i < $candidates.size(); ++i ) {     
+                    ITreeNode node = $candidates.get(i);
+                    String value = _pseudoAttrs.get($attr.text).resolve(node);
+
+                    if ( optext.compareTo("=") == 0 ) {
+                        if ( value != null && value.compareTo(criteria) == 0 ) {
+                            result.add(node);   
+                        }
+                    } else if ( optext.compareTo("!=") == 0 ) {
+                        if ( value == null || value.compareTo(criteria) != 0 ) {
+                            result.add(node);   
+                        }
+                    } else if ( optext.compareTo("$=") == 0 )  {
+                        if ( value != null && value.endsWith(criteria) ) {
+                            result.add(node);
+                        }
+                    } else if ( optext.compareTo("^=") == 0 ) {
+                        if ( value != null && value.startsWith(criteria) ) {
+                            result.add(node);
+                        }
+                    } else if ( optext.compareTo("*=") == 0 ) {
+                        if ( value != null && value.indexOf(criteria) >= 0 ) {
+                            result.add(node);
+                        }
+                    }   
+                }                
+            }
+
+            $survival = result;
+        }
+    | '[' attr=ELEMENT num_comp_op v=(INTEGER | FLOAT | PERCENTAGE) ']'
+        {
+            List<ITreeNode> result = new ArrayList<ITreeNode>();
+            String optext = $num_comp_op.text;
+            String vtext = $v.text;
+            String key = $attr.text;
+            String method = key + "()";
+            double criteria = parseNum(vtext);
+
+            for ( int i = 0; i < $candidates.size(); ++i ){
+                ITreeNode node = $candidates.get(i);
+                String qkey = key;
+                boolean found = false;
+                
+                if ( node.containsProperty(key) ) {
+                    found = true;
+                } else if ( node.containsProperty(method) ) {
+                    qkey = method;
+                    found = true;
+                }
+
+                if ( found ) {
+                    IProperty property = node.getProperty(qkey);
+
+                    String pv = property.getValue();
+                    if ( pv != null && pv.length() > 0 ) {
+                        double value = parseNum(property.getValue());
+                        
+                        if ( optext.compareTo("=") == 0 ) {
+                            if ( value == criteria ) {
+                                result.add(node);
+                            }
+                        } else if ( optext.compareTo(">") == 0 ) {
+                            if ( value > criteria ) { 
+                                result.add(node);
+                            }
+                        } else if ( optext.compareTo("<") == 0 ) {
+                            if ( value < criteria ) { 
+                                result.add(node);
+                            }
+                        } else if ( optext.compareTo(">=") == 0 ) {
+                            if ( value >= criteria ) {
+                                result.add(node);
+                            }
+                        } else if ( optext.compareTo("<=") == 0 ) {
+                            if ( value <= criteria ) {
+                                result.add(node);
+                            }
+                        }
+                    }
+                }
+            }
+
+            $survival = result;
+        }
+    | '[' ':' attr=ELEMENT num_comp_op v=(INTEGER | FLOAT | PERCENTAGE) ']'
+        {
+            List<ITreeNode> result = new ArrayList<ITreeNode>();
+
+            if ( _pseudoAttrs.containsKey($attr.text) ) {
+                String optext = $num_comp_op.text;
+                String vtext = $v.text;
+                double criteria = parseNum(vtext);
+                
+                for ( int i = 0; i < $candidates.size(); ++i ){
+                    ITreeNode node = $candidates.get(i);
+                    String pv = _pseudoAttrs.get($attr.text).resolve(node);
+
+                    if ( pv != null && pv.length() > 0 ) {
+                        double value = parseNum(pv);
+                        
+                        if ( optext.compareTo("=") == 0 ) {
+                            if ( value == criteria ) {
+                                result.add(node);
+                            }
+                        } else if ( optext.compareTo(">") == 0 ) {
+                            if ( value > criteria ) { 
+                                result.add(node);
+                            }
+                        } else if ( optext.compareTo("<") == 0 ) {
+                            if ( value < criteria ) { 
+                                result.add(node);
+                            }
+                        } else if ( optext.compareTo(">=") == 0 ) {
+                            if ( value >= criteria ) {
+                                result.add(node);
+                            }
+                        } else if ( optext.compareTo("<=") == 0 ) {
+                            if ( value <= criteria ) {
+                                result.add(node);
+                            }
+                        }
                     }
                 }
             }
@@ -424,6 +527,7 @@ op
     | '!='
     | '$='
     | '^='
+    | '*='
     ;
 
 indexop
@@ -438,7 +542,7 @@ selector_expression [List<ITreeNode> candidates] returns [List<ITreeNode> surviv
         {
             $survival = $atom.survival;
         }
-    | ':' indexop '(' vidx=DIGIT+ ')'
+    | ':' indexop '(' vidx=INTEGER ')'
         {
             debug("成功匹配\":" + $indexop.text + "(" + $vidx.text + ")\""); 
             int idx = Integer.parseInt($vidx.text);
@@ -464,8 +568,8 @@ selector_expression [List<ITreeNode> candidates] returns [List<ITreeNode> surviv
                         ITreeNode node = $candidates.get(i);
                         List<ITreeNode> children = node.getChildren();
                         
-                        if ( idx < children.size() ) {
-                            $survival.add(node.getChildren().get(idx));
+                        if ( idx > 0 && idx <= children.size() ) {
+                            $survival.add(node.getChildren().get(idx - 1));
                         }
                     }
                 }
@@ -495,9 +599,22 @@ selector_expression [List<ITreeNode> candidates] returns [List<ITreeNode> surviv
     | ':' CONTAINS '(' text=QUOTED_STRING ')'
         {
             debug("成功匹配\":contains('" + $text.text + "')\"");
-            Map<String, String> attributes = new HashMap<String, String>();
             String attribute = $text.text;
             String value = attribute.substring(1, attribute.length() - 1);
+
+            List<ITreeNode> result = new ArrayList<ITreeNode>();
+
+            for ( int i = 0; i < candidates.size(); ++i ) {
+                ITreeNode node = candidates.get(i);
+                
+                String nodeText = node.getText();
+                if ( nodeText != null && nodeText.indexOf(value) >= 0 ) {
+                    result.add(node);
+                }
+            }
+
+            /*
+            Map<String, String> attributes = new HashMap<String, String>();
             attributes.put("mText", value);
 
             List<ITreeNode> result = new ArrayList<ITreeNode>();
@@ -520,7 +637,8 @@ selector_expression [List<ITreeNode> candidates] returns [List<ITreeNode> surviv
                 
                 if ( isMatched ) 
                     result.add(node);
-            }             
+            } 
+            */
 
             $survival = result;    
         }
@@ -575,18 +693,7 @@ selector_expression [List<ITreeNode> candidates] returns [List<ITreeNode> surviv
                 $survival.add(last);
             }
         }
-    | ':' TEXT
-        {
-            debug("成功匹配\":text\"");
-            // 对于:text元条件，我们就认为所有包含mText属性的控件都是Text
-            $survival = filterByAttributes($candidates, "mText");
-        }
-    | ':' RADIO
-        {
-            debug("成功匹配\":radio\"");
-            // TODO: 对于android里的RadioGroup来说是否应该当成radio?
-            $survival = filterByNameStartsWith($candidates, "RadioButton");
-        }
+
     | ':' EMPTY
         {
             debug("成功匹配\":empty\"");
@@ -598,6 +705,28 @@ selector_expression [List<ITreeNode> candidates] returns [List<ITreeNode> surviv
             }
             
             $survival = result;
+        }
+    | ':' PARENT
+        {
+            debug("成功匹配\":parent\"");            
+            ITreeNode candidate = 
+                $candidates == null ? null 
+                                    : $candidates.size() == 0 ? null : $candidates.get(0);
+            $survival = new ArrayList<ITreeNode>();
+            if ( candidate != null )
+                $survival.add(candidate.getParent());
+        }
+        /*
+    | ':' TEXT
+        {
+            debug("成功匹配\":text\"");
+            // $survival = filterByNameEndsWith($candidates, "EditText");
+        }
+    | ':' RADIO
+        {
+            debug("成功匹配\":radio\"");
+            // TODO: 对于android里的RadioGroup来说是否应该当成radio?
+            $survival = filterByNameStartsWith($candidates, "RadioButton");
         }
     | ':' VISIBLE
         {
@@ -641,15 +770,23 @@ selector_expression [List<ITreeNode> candidates] returns [List<ITreeNode> surviv
             debug("成功匹配\":label\"");
             $survival = filterByNameStartsWith($candidates, "TextView");
         }
-    | ':' PARENT
+        */
+    | ':' ELEMENT
         {
-            debug("成功匹配\":parent\"");            
-            ITreeNode candidate = 
-                $candidates == null ? null 
-                                    : $candidates.size() == 0 ? null : $candidates.get(0);
+            $survival = filterPseudo($candidates, $ELEMENT.text); 
+        }
+    | '#' ELEMENT
+        {
+            List<ITreeNode> d = descendants($candidates, -1);
             $survival = new ArrayList<ITreeNode>();
-            if ( candidate != null )
-                $survival.add(candidate.getParent());
+            String name = $ELEMENT.text;
+            for ( int i = 0; i < d.size(); ++i ) {
+                String pname = d.get(i).getName();
+               
+                if ( pname != null && name.compareTo(pname) == 0 ) {
+                    $survival.add(d.get(i));
+                }
+            }
         }
     ;
 
@@ -688,29 +825,33 @@ GT: 'gt';
 LT: 'lt';
 NOT: 'not';
 CONTAINS: 'contains';
-TEXT: 'text';
-RADIO: 'radio';
+//TEXT: 'text';
+//RADIO: 'radio';
 EMPTY: 'empty';
-CHECKBOX: 'checkbox';
-FOCUS: 'focus';
+//CHECKBOX: 'checkbox';
+//FOCUS: 'focus';
 HAS: 'has';
-CHECKED: 'checked';
+//CHECKED: 'checked';
 PREV: 'prev';
 NEXT: 'next';
 SIBLINGS: 'siblings';
 NTH_CHILD: 'nth-child';
 PARENT: 'parent';
-DISABLED: 'disabled';
-VISIBLE: 'visible';
-HIDDEN: 'hidden';
-BUTTON: 'button';
-LABEL: 'label';
-IMAGE: 'image';
+//DISABLED: 'disabled';
+//ENABLED: 'enabled';
+//VISIBLE: 'visible';
+//HIDDEN: 'hidden';
+//BUTTON: 'button';
+//LABEL: 'label';
+//IMAGE: 'image';
 LAST_CHILD: 'last-child';
 FIRST_CHILD: 'first-child';
 FIRST: 'first';
 LAST: 'last';
-DIGIT: ('0' .. '9');
+INTEGER: DIGIT+;
+PERCENTAGE: ('+' | '-')? DIGIT+ ('.' DIGIT+)? '%';
+FLOAT: ('+' | '-')? DIGIT+ ('.' DIGIT+)?;
+fragment DIGIT: ('0' .. '9');
 ELEMENT: ('a'..'z'|'A'..'Z'|'_')('a'..'z'|'A'..'Z'|'0'..'9'|'_'|'.')*;
 ASTERISK: '*';
 QUOTED_STRING: '\'' .+ '\''; 

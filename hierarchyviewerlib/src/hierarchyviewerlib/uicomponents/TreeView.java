@@ -1,17 +1,9 @@
 /*
- * Copyright (C) 2010 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (c) Shanghai Zhiping Technology Co.,Limited
+ * Author: Binhua Liu
+ * Web Site: www.vowei.com
+ * License: GPL v3 (http://www.gnu.org/copyleft/gpl.html)
+ * A Part of source code come from "Android Open Source Project" 
  */
 
 package hierarchyviewerlib.uicomponents;
@@ -125,38 +117,11 @@ public class TreeView extends Canvas implements ITreeChangeListener {
 
     private boolean mButtonClicked;
 
-    private DrawableViewNode mLastDrawnSelectedViewNode;
 
     // The profile-image box needs to be moved to,
     // so add some dragging leeway.
     private static final int DRAG_LEEWAY = 220;
 
-    // Profile-image box constants
-    private static final int RECT_WIDTH = 190;
-
-    private static final int RECT_HEIGHT = 224;
-
-    private static final int BUTTON_RIGHT_OFFSET = 5;
-
-    private static final int BUTTON_TOP_OFFSET = 5;
-
-    private static final int IMAGE_WIDTH = 125;
-
-    private static final int IMAGE_HEIGHT = 120;
-
-    private static final int IMAGE_OFFSET = 6;
-
-    private static final int IMAGE_ROUNDING = 8;
-
-    private static final int RECTANGLE_SIZE = 5;
-
-    private static final int TEXT_SIDE_OFFSET = 8;
-
-    private static final int TEXT_TOP_OFFSET = 4;
-
-    private static final int TEXT_SPACING = 2;
-
-    private static final int TEXT_ROUNDING = 20;
 
     private MenuManager menuManager =new MenuManager("#PopUpMenu");
     
@@ -262,7 +227,6 @@ public class TreeView extends Canvas implements ITreeChangeListener {
 
         public void keyPressed(KeyEvent e) {
             boolean selectionChanged = false;
-            DrawableViewNode clickedNode = null;
             synchronized (TreeView.this) {
                 if (mTree != null && mViewport != null && mSelectedNode != null) {
                     switch (e.keyCode) {
@@ -345,7 +309,6 @@ public class TreeView extends Canvas implements ITreeChangeListener {
                             }
                             break;
                         case SWT.CR:
-                            clickedNode = mSelectedNode;
                             break;
                     }
                 }
@@ -365,17 +328,7 @@ public class TreeView extends Canvas implements ITreeChangeListener {
     private MouseListener mMouseListener = new MouseListener() {
 
         public void mouseDoubleClick(MouseEvent e) {
-            DrawableViewNode clickedNode = null;
-            synchronized (TreeView.this) {
-                if (mTree != null && mViewport != null) {
-                    Point pt = transformPoint(e.x, e.y);
-                    clickedNode = mTree.getSelected(pt.x, pt.y);
-                }
-            }
-/*            if (clickedNode != null) {
-                HierarchyViewerDirector.getDirector().showCapture(getShell(), clickedNode.viewNode);
-                mDoubleClicked = true;
-            }*/
+        	//pass
         }
 
         public void mouseDown(MouseEvent e) {

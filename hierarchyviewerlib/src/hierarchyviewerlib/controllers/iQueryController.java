@@ -1,8 +1,21 @@
+/*
+ * Copyright (c) Shanghai Zhiping Technology Co.,Limited
+ * Author: Binhua Liu
+ * Web Site: www.vowei.com
+ * License: GPL v3 (http://www.gnu.org/copyleft/gpl.html)
+ */
+
+
 package hierarchyviewerlib.controllers;
+
+import hierarchyviewerlib.models.TreeViewModel;
+import hierarchyviewerlib.uiutilities.DrawableViewNode;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import cc.iqa.iquery.IPseudoAttribute;
+import cc.iqa.iquery.ITreeNode;
 import cc.iqa.iquery.iQueryIdeParser;
 import cc.iqa.iquery.iQueryParser;
 
@@ -47,7 +60,7 @@ public class iQueryController {
 	static public boolean isLegal(String text)
 	{
 		try {
-			iQueryParser parser = iQueryIdeParser.parse(text);
+			iQueryParser parser = iQueryIdeParser.createParser(text);
 			if(parser.getErrors().size()==0)
 			{
 				return true;
@@ -62,40 +75,68 @@ public class iQueryController {
 		} 
 	}
 	
-	static public List<String> getSyntaxErrors(String iquery)
+	private static void registerPseudoAttributes(iQueryParser parser) {
+		parser.registerPseudoAttribute("top", new IPseudoAttribute() {
+			public String resolve(ITreeNode node) {
+				return node.getProperty(":top").getValue();
+			}
+		});
+		parser.registerPseudoAttribute("left", new IPseudoAttribute() {
+			public String resolve(ITreeNode node) {
+				return node.getProperty(":left").getValue();
+			}
+		});
+		parser.registerPseudoAttribute("bottom", new IPseudoAttribute() {
+			public String resolve(ITreeNode node) {
+				return node.getProperty(":bottom").getValue();
+			}
+		});
+		parser.registerPseudoAttribute("right", new IPseudoAttribute() {
+			public String resolve(ITreeNode node) {
+				return node.getProperty(":right").getValue();
+			}
+		});
+		parser.registerPseudoAttribute("width", new IPseudoAttribute() {
+			public String resolve(ITreeNode node) {
+				return node.getProperty(":width").getValue();
+			}
+		});
+		parser.registerPseudoAttribute("height", new IPseudoAttribute() {
+			public String resolve(ITreeNode node) {
+				return node.getProperty(":height").getValue();
+			}
+		});
+	}
+	
+	static public List<String> query(String iquery,boolean fromSelectedNode, List<ITreeNode> outTreeNodeList)
 	{
+		List<String> errors;
 		try {
-			iQueryParser parser = iQueryIdeParser.parse(iquery);
-			List<String> errors= parser.getErrors();
+			DrawableViewNode tree = TreeViewModel.getModel().getTree();
+			if(tree==null)
+			{
+				errors = new ArrayList<String>();
+				errors.add("当前没有加载控件树");
+				return errors;
+			}
+			
+			ITreeNode startNode=TreeViewModel.getModel().getTree().viewNode;
+			if(fromSelectedNode&&TreeViewModel.getModel().getSelection()!=null)
+			{
+				startNode=TreeViewModel.getModel().getSelection().viewNode;
+			}
+			
+			List<ITreeNode> candidates =new ArrayList<ITreeNode>();
+			candidates.add(startNode);
+			iQueryParser parser = iQueryIdeParser.createParser(iquery,false);
+			registerPseudoAttributes(parser);
+			outTreeNodeList.addAll(parser.query(candidates));
+			errors= parser.getErrors();
 			return errors;
 		} catch (Exception e) {
 			//TODO exception type
 			throw new RuntimeException(e.toString());
 		}
-	}
-	
-	static public String getSyntaxError(String iquery)
-	{
-		try {
-			iQueryParser parser = iQueryIdeParser.parse(iquery);
-			List<String> errors= parser.getErrors();
-			if(errors.size()==0)
-			{
-				return "正确";
-			}
-			else
-			{
-				String message="";
-				for(String error:errors)
-				{
-					message+=error;
-				}
-				return message;
-			}
-		} catch (Exception e) {
-			//TODO exception type
-			throw new RuntimeException(e.toString());
-		} 
 	}
 	
 	public interface IIQueryInsertListener

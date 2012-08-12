@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) Shanghai Zhiping Technology Co.,Limited
+ * Author: Binhua Liu
+ * Web Site: www.vowei.com
+ * License: GPL v3 (http://www.gnu.org/copyleft/gpl.html)
+ */
+
+
 package hierarchyviewerlib.models;
 
 import java.io.File;
@@ -60,15 +68,13 @@ public class ConfigurationModel {
 		URL fileURL =FileLocator.toFileURL(url);
 		File file =new File(fileURL.getPath()); 
         if (!file.exists()) {
-        	int i=1;
-        	//TODO throw exception, cannot file configuration file.
+        	throw new RuntimeException("read configure file fail");
         }
         
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document doc = builder.parse(file);
         Element root =doc.getDocumentElement();
-        Node platformNode = XMLHelper.selectSingleNode("/Configuration/Platform[@name='Android']", (Object)root);
         
       //get all iquery elements
         NodeList iQueryElementNodeList=XMLHelper.selectNodes("./iQuery/Element",root);
@@ -77,7 +83,14 @@ public class ConfigurationModel {
         	Element iQueryElement=(Element)iQueryElementNodeList.item(i);
         	String name =iQueryElement.getAttribute("name");
         	String description =iQueryElement.getAttribute("description");
-        	mIQueryElements.add(new iQueryElement(name,description));
+        	boolean supported=true;
+        	if(iQueryElement.hasAttribute("supported"))
+        	{
+        		String supportedStr=iQueryElement.getAttribute("supported");
+        		supported=supportedStr.equalsIgnoreCase("true");
+        	}
+        	
+        	mIQueryElements.add(new iQueryElement(name,description,supported));
         }
         
         //get all uielements

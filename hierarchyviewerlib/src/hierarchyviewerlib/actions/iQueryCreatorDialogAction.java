@@ -9,7 +9,13 @@ import hierarchyviewerlib.common.IConManager;
 import hierarchyviewerlib.uicomponents.iQueryCreatorDialog;
 
 public class iQueryCreatorDialogAction extends Action {
-	
+/*
+ * Copyright (c) Shanghai Zhiping Technology Co.,Limited
+ * Author: Binhua Liu
+ * Web Site: www.vowei.com
+ * License: GPL v3 (http://www.gnu.org/copyleft/gpl.html)
+ */	
+
 private final IWorkbenchWindow window;
 static private iQueryCreatorDialog iqueryCreatorDialog=null;
 
@@ -33,11 +39,10 @@ static private iQueryCreatorDialog iqueryCreatorDialog=null;
 		}
 		
 		Shell parent=window.getWorkbench().getActiveWorkbenchWindow().getShell();
-		Shell shell =new Shell(parent);
 		
-		iQueryCreatorDialog dialog =new iQueryCreatorDialog(shell);
-		dialog.open();
+		iQueryCreatorDialog dialog =new iQueryCreatorDialog(parent);
 		iqueryCreatorDialog=dialog;
+		dialog.open();
 	}
 
 }
