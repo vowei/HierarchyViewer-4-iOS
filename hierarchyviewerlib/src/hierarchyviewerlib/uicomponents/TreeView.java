@@ -8,15 +8,6 @@
 
 package hierarchyviewerlib.uicomponents;
 
-/*import com.android.ddmuilib.ImageLoader;
-import com.android.hierarchyviewerlib.HierarchyViewerDirector;
-import com.android.hierarchyviewerlib.device.ViewNode.ProfileRating;
-import com.android.hierarchyviewerlib.models.TreeViewModel;
-import com.android.hierarchyviewerlib.models.TreeViewModel.ITreeChangeListener;
-import com.android.hierarchyviewerlib.ui.util.DrawableViewNode;
-import com.android.hierarchyviewerlib.ui.util.DrawableViewNode.Point;
-import com.android.hierarchyviewerlib.ui.util.DrawableViewNode.Rectangle;
-*/
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -48,7 +39,6 @@ import org.eclipse.swt.widgets.Menu;
 
 import hierarchyviewerlib.actions.CopyFunctionCallByIndexAction;
 import hierarchyviewerlib.actions.CopyFunctionCallByNameAction;
-import hierarchyviewerlib.actions.SaveHierarchyViewPictureAction;
 import hierarchyviewerlib.common.ImageLoader;
 import hierarchyviewerlib.common.ViewNode;
 import hierarchyviewerlib.models.TreeViewModel;
@@ -130,7 +120,6 @@ public class TreeView extends Canvas implements ITreeChangeListener {
 
         mModel = TreeViewModel.getModel();
         mModel.addTreeChangeListener(this);
-        SaveHierarchyViewPictureAction.SetHierarchyViewControl(this);
 
         addPaintListener(mPaintListener);
         addMouseListener(mMouseListener);

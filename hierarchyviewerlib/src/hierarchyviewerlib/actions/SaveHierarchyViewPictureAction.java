@@ -20,15 +20,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 
 import hierarchyviewerlib.common.IConManager;
+import hierarchyviewerlib.models.TreeViewModel;
+import hierarchyviewerlib.uicomponents.TreeView;
+import hierarchyviewerlib.uiutilities.DrawableViewNode;
 
 public class SaveHierarchyViewPictureAction extends Action {
 	private final IWorkbenchWindow window;
-	static private Control sHierarchyViewControl;
-	
-	static public void SetHierarchyViewControl(Control control)
-	{
-		sHierarchyViewControl= control;
-	}
+
 	
 	public SaveHierarchyViewPictureAction(IWorkbenchWindow window)
 	{
@@ -42,15 +40,7 @@ public class SaveHierarchyViewPictureAction extends Action {
 
 	@Override
 	public void run() {
-	  	if(sHierarchyViewControl.isDisposed())
-	  	{
-	  		//TODO;
-	  		return;
-	  	}
 	  	
-		//capture picture
-		ImageLoader loader =captureControl();
-		
 		Shell shell=window.getWorkbench().getActiveWorkbenchWindow().getShell();
 		FileDialog fileDialog = new FileDialog(shell,SWT.SAVE);
 		fileDialog.setText("保存控件层次图");
@@ -61,21 +51,11 @@ public class SaveHierarchyViewPictureAction extends Action {
 		if(selected==null)
 			return;
 	  	
-	  	save(loader, selected);
+	  	save(selected);
 	}
 	
-	  public ImageLoader captureControl() {
-		    GC gc = new GC(sHierarchyViewControl);
-		    Image image = new Image(sHierarchyViewControl.getDisplay(), sHierarchyViewControl.getSize().x, sHierarchyViewControl.getSize().y);
-		    gc.copyArea(image, 0, 0);
-		    ImageLoader loader = new ImageLoader();
-		    loader.data = new ImageData[] { image.getImageData() };
-		   
-		    gc.dispose();
-		    return loader;
-	}
 	  
-	  public void save(ImageLoader loader, String path)
+	  public void save(String path)
 	  {
 		  int dotIndex= path.lastIndexOf('.');
 		  int imageType =  SWT.IMAGE_BMP;
@@ -106,6 +86,15 @@ public class SaveHierarchyViewPictureAction extends Action {
 			  }
 		  }
 		  
-		  loader.save(path, imageType);
+		  //Shell parent=window.getWorkbench().getActiveWorkbenchWindow().getShell();
+		  
+		  DrawableViewNode viewNode = TreeViewModel.getModel().getTree();
+		  Image image = TreeView.paintToImage(viewNode);
+		  
+		  ImageLoader imageLoader = new ImageLoader();
+          imageLoader.data = new ImageData[] {
+              image.getImageData()
+          };
+          imageLoader.save(path, imageType);
 	  }
 }

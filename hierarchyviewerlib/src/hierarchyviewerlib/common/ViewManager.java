@@ -37,4 +37,5 @@ public class ViewManager {
 	{
 		sViewMap.put(alias, viewId);
 	}
+	
 }
