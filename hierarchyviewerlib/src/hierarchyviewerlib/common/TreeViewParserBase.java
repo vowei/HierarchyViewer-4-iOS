@@ -12,16 +12,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.dd.plist.NSDictionary;
-
 import hierarchyviewerlib.common.ViewNode.Property;
 import hierarchyviewerlib.uiutilities.DrawableViewNode;
 
 public abstract class TreeViewParserBase {
 	
-	abstract public DrawableViewNode ParseTreeNode(NSDictionary rootDict, String imagePath);
+	abstract public DrawableViewNode ParseTreeNode(Object treeObject, String imagePath);
 	
-	public abstract ViewNode CreateViewNodeFromString(ViewNode parent, String data);
+	public abstract ViewNode CreateViewNodeFromString(ViewNode parent, Object data);
 	
 	protected Set<String> aliasNameSet = new HashSet<String>();
 	

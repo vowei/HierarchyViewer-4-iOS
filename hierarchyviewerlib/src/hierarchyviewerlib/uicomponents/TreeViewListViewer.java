@@ -7,8 +7,8 @@
 
 package hierarchyviewerlib.uicomponents;
 
-import hierarchyviewerlib.models.TreeViewModel;
-import hierarchyviewerlib.models.TreeViewModel.ITreeChangeListener;
+import hierarchyviewerlib.models.LogFileModel;
+import hierarchyviewerlib.models.LogFileModel.ILogFileChangeListener;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -20,13 +20,13 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
-public class TreeViewListViewer extends ListViewer implements ITreeChangeListener{
+public class TreeViewListViewer extends ListViewer implements ILogFileChangeListener{
 
 	public TreeViewListViewer(Composite parent) {
 		super(parent,  SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER );
 		setContentProvider(new ArrayContentProvider());
 		setLabelProvider(new LabelProvider() );
-		TreeViewModel.getModel().addTreeChangeListener(this);
+		LogFileModel.getModel().addLogFileChangeListener(this);
 		this.addSelectionChangedListener(new ISelectionChangedListener() 
 		{
 
@@ -35,34 +35,14 @@ public class TreeViewListViewer extends ListViewer implements ITreeChangeListene
 				 ISelection selection = event.getSelection();
 			        if (selection !=null ) {
 			            String value = (String) ((IStructuredSelection) selection).getFirstElement();
-			            TreeViewModel.getModel().setCurrentData(value);
+			            LogFileModel.getModel().setCurrentData(value);
 			        }
 			}});
 	}
 
 	@Override
-	public void treeChanged() {
-		// pass
-	}
-
-	@Override
-	public void selectionChanged() {
-		// pass
-	}
-
-	@Override
-	public void viewportChanged() {
-		// pass
-	}
-
-	@Override
-	public void zoomChanged() {
-		// pass
-	}
-
-	@Override
 	public void logfileChanged() {
-		setInput(TreeViewModel.getModel().getViewTreeNames());
+		setInput(LogFileModel.getModel().getViewTreeNames());
 	}
 
 }

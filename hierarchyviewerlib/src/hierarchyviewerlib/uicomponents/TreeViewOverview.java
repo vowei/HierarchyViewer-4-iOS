@@ -373,9 +373,4 @@ public class TreeViewOverview extends Canvas implements ITreeChangeListener {
         }
         doRedraw();
     }
-
-	@Override
-	public void logfileChanged() {
-		//pass
-	}
 }

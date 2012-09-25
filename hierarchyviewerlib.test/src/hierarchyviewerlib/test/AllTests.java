@@ -9,7 +9,7 @@
 package hierarchyviewerlib.test;
 
 import hierarchyviewerlib.common.ViewNode;
-import hierarchyviewerlib.models.TreeViewModel;
+import hierarchyviewerlib.models.LogFileModel;
 
 import java.io.IOException;
 import java.net.URL;
@@ -92,10 +92,9 @@ public class AllTests {
 
 	public List<ITreeNode> getRoot()
 	{
-		TreeViewModel model = TreeViewModel.getModel();
+		LogFileModel model = LogFileModel.getModel();
 		model.loadLogFile(sLogPath);
-		model.setCurrentData(sNodeName);
-		ViewNode viewNode=model.getTree().viewNode;
+		ViewNode viewNode=model.getViewNodeByLogName(sNodeName);
 		List<ITreeNode> candidates=  new ArrayList<ITreeNode>();
 		candidates.add(viewNode);
 		return candidates;

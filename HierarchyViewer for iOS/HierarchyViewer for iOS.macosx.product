@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="HierarchyViewer for iOS" id="HierarchyViewer_for_iOS.release" application="HierarchyViewer_for_iOS.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="HierarchyViewer for iOS" id="HierarchyViewer_for_iOS.release" application="HierarchyViewer_for_iOS.application" version="2.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <image path="product_lg.png"/>
@@ -28,7 +28,6 @@ website: http://www.vowei.com
          <bmp/>
       </win>
    </launcher>
-
 
    <vm>
    </vm>
@@ -717,6 +716,7 @@ Public License instead of this License.  But first, please read
       <plugin id="HierarchyViewer_for_iOS"/>
       <plugin id="cc.iqa.runtime"/>
       <plugin id="com.dd.plist"/>
+      <plugin id="com.google.gson"/>
       <plugin id="com.ibm.icu"/>
       <plugin id="hierarchyviewerlib"/>
       <plugin id="org.antlr.runtime"/>

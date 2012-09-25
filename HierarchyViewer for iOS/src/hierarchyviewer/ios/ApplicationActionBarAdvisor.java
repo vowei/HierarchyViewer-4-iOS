@@ -7,10 +7,13 @@
 
 package hierarchyviewer.ios;
 
+import hierarchyviewerlib.actions.OpenAppAction;
 import hierarchyviewerlib.actions.OpenLogFileAction;
 import hierarchyviewerlib.actions.OpenViewAction;
+import hierarchyviewerlib.actions.RefreshAppElementAction;
 import hierarchyviewerlib.actions.RefreshLogFileAction;
 import hierarchyviewerlib.actions.SaveHierarchyViewPictureAction;
+import hierarchyviewerlib.actions.TerminateAppAction;
 import hierarchyviewerlib.actions.iQueryCreatorDialogAction;
 import hierarchyviewerlib.uicomponents.StatusBar;
 
@@ -53,6 +56,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     private Action TreeViewListViewAction;
     private Action iqueryCreatorDialogAction;
     private Action saveHierarchyViewPictureAction;
+    private Action openAppAction;
+    private Action refreshAppElementAction;
+    private Action terminateAppAction;
     
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
         super(configurer);
@@ -73,6 +79,15 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         
         refreshLogFileAction=new RefreshLogFileAction();
         register(refreshLogFileAction);
+        
+        openAppAction = new OpenAppAction(window);
+        register(openAppAction);
+        
+        refreshAppElementAction = new RefreshAppElementAction();
+        register(refreshAppElementAction);
+        
+        terminateAppAction = new TerminateAppAction();
+        register(terminateAppAction);
         
         saveHierarchyViewPictureAction = new SaveHierarchyViewPictureAction(window);
         register(saveHierarchyViewPictureAction);
@@ -120,6 +135,12 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         fileMenu.add(openLogFileAction);
         fileMenu.add(refreshLogFileAction);
         fileMenu.add(new Separator());
+        
+        fileMenu.add(openAppAction);
+        fileMenu.add(refreshAppElementAction);
+        fileMenu.add(terminateAppAction);
+        fileMenu.add(new Separator());
+        
         fileMenu.add(saveHierarchyViewPictureAction);
         fileMenu.add(new Separator());
         fileMenu.add(exitAction);
@@ -143,10 +164,16 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         coolBar.add(new ToolBarContributionItem(toolbar, "files"));   
         toolbar.add(openLogFileAction);
         toolbar.add(refreshLogFileAction);
-        toolbar.add(saveHierarchyViewPictureAction);
         
         toolbar = new ToolBarManager(SWT.FLAT | SWT.RIGHT);
-        coolBar.add(new ToolBarContributionItem(toolbar, "tools"));   
+        coolBar.add(new ToolBarContributionItem(toolbar, "app"));   
+        toolbar.add(openAppAction);
+        toolbar.add(refreshAppElementAction);
+        toolbar.add(terminateAppAction);
+        
+        toolbar = new ToolBarManager(SWT.FLAT | SWT.RIGHT);
+        coolBar.add(new ToolBarContributionItem(toolbar, "tools"));
+        toolbar.add(saveHierarchyViewPictureAction);
         toolbar.add(iqueryCreatorDialogAction);
     }
     

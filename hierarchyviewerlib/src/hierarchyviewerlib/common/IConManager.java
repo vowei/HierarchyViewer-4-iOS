@@ -21,6 +21,8 @@ public class IConManager {
 	public static Image OPEN_FOLDER;
 	public static Image EDIT_IQUERY;
 	public static Image SAVE_HIERARCHY;
+	public static Image OPEN_APP;
+	public static Image TERMINATE;
 	
 	static 
 	{
@@ -32,5 +34,7 @@ public class IConManager {
 		OPEN_FOLDER = ImageLoader.getDdmUiLibLoader().loadImage("openfolderHS.png", Display.getDefault());
 		EDIT_IQUERY=ImageLoader.getDdmUiLibLoader().loadImage("EditIQuery.png", Display.getDefault());
 		SAVE_HIERARCHY=ImageLoader.getDdmUiLibLoader().loadImage("saveHS.png", Display.getDefault());
+		OPEN_APP=ImageLoader.getDdmUiLibLoader().loadImage("run_exc.gif", Display.getDefault());
+		TERMINATE=ImageLoader.getDdmUiLibLoader().loadImage("terminate.png", Display.getDefault());
 	}
 }

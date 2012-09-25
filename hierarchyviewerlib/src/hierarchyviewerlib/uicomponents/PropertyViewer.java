@@ -378,9 +378,4 @@ public class PropertyViewer extends Composite implements ITreeChangeListener {
 			}
     	}
     };
-
-	@Override
-	public void logfileChanged() {
-		//pass 
-	}
 }

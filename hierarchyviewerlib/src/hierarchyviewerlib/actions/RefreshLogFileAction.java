@@ -11,7 +11,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import hierarchyviewerlib.common.IConManager;
-import hierarchyviewerlib.models.TreeViewModel;
+import hierarchyviewerlib.models.LogFileModel;
 
 public class RefreshLogFileAction extends Action {
 	//private final IWorkbenchWindow window;
@@ -27,6 +27,6 @@ public class RefreshLogFileAction extends Action {
 
 	@Override
 	public void run() {	
-		TreeViewModel.getModel().refreshLogFile();
+		LogFileModel.getModel().refreshLogFile();
 	}
 }

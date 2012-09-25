@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 
 import hierarchyviewerlib.common.IConManager;
-import hierarchyviewerlib.models.TreeViewModel;
+import hierarchyviewerlib.models.LogFileModel;
 
 public class OpenLogFileAction extends Action {
 	private final IWorkbenchWindow window;
@@ -40,7 +40,7 @@ public class OpenLogFileAction extends Action {
 		if(selected==null)
 			return;
 		
-		TreeViewModel.getModel().loadLogFile(selected);
+		LogFileModel.getModel().loadLogFile(selected);
 		
 		//load project
 	}

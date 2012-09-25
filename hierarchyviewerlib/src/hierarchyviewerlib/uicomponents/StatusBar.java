@@ -28,11 +28,11 @@ import org.eclipse.ui.PlatformUI;
 
 import hierarchyviewerlib.controllers.ViewInteractionController;
 import hierarchyviewerlib.controllers.ViewInteractionController.IViewInteractionListener;
-import hierarchyviewerlib.models.TreeViewModel;
-import hierarchyviewerlib.models.TreeViewModel.ITreeChangeListener;
+import hierarchyviewerlib.models.LogFileModel;
+import hierarchyviewerlib.models.LogFileModel.ILogFileChangeListener;
 import hierarchyviewerlib.uiutilities.DrawableViewNode.Point;
 
-public class StatusBar extends ControlContribution implements ITreeChangeListener,IViewInteractionListener {
+public class StatusBar extends ControlContribution implements ILogFileChangeListener,IViewInteractionListener {
 
 	private Label mMessageLabel;
 	private IStatusLineManager mIStatusLineManager;
@@ -44,7 +44,7 @@ public class StatusBar extends ControlContribution implements ITreeChangeListene
 	public StatusBar(String id, IStatusLineManager statusLineManager) {
 		super(id);
 		mIStatusLineManager=statusLineManager;
-		TreeViewModel.getModel().addTreeChangeListener(this);
+		LogFileModel.getModel().addLogFileChangeListener(this);
 		ViewInteractionController.getController().addViewInteractionListener(this);
 	}
 
@@ -112,31 +112,11 @@ public class StatusBar extends ControlContribution implements ITreeChangeListene
 	}
 
 	@Override
-	public void treeChanged() {
-		//pass
-	}
-
-	@Override
-	public void selectionChanged() {
-		//pass
-	}
-
-	@Override
-	public void viewportChanged() {
-		//pass
-	}
-
-	@Override
-	public void zoomChanged() {
-		//pass
-	}
-
-	@Override
 	public void logfileChanged() {
 		Display.getDefault().syncExec(new Runnable() {
             public void run() {
                 synchronized (this) {
-                	mIStatusLineManager.setMessage(null, TreeViewModel.getModel().getLogFilePath());
+                	mIStatusLineManager.setMessage(null, LogFileModel.getModel().getLogFilePath());
                 }
             }
         });

@@ -435,11 +435,6 @@ public class LayoutViewer extends Canvas implements ITreeChangeListener,IViewInt
     }
 
 	@Override
-	public void logfileChanged() {
-		//pass
-	}
-
-	@Override
 	public void interactionTaskSubmited(String taskName, Object value) {
 		final Control thisControl=this;
 		if(taskName.equalsIgnoreCase("NodeViewTooltip"))
