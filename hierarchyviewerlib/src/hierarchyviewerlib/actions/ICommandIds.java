@@ -20,7 +20,7 @@ public interface ICommandIds {
     public static final String CMD_OPEN_IQUERY_DIALOG = "hierarchyviewerlib.iQueryCreatorDialog";
     public static final String CMD_OPEN_LOG_FILE = "hierarchyviewerlib.OpenLogFile";
     public static final String CMD_REFRESH_LOG_FILE = "hierarchyviewerlib.RefreshLogFile";
-    public static final String CMD_OPEN_VIEWS = "hierarchyviewerlib.OpenView";
+	public static final String CMD_OPEN_VIEWS = "hierarchyviewerlib.OpenView";
     public static final String CMD_OPEN_APP = "hierarchyviewerlib.OpenApp";
     public static final String CMD_REFRESH_APP_ELEMENT="hierarchyviewerlib.RefreshAppElement";
     public static final String CMD_TERMINATE_APP="hierarchyviewerlib.TerminateApp";

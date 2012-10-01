@@ -13,6 +13,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 
+import hierarchyviewerlib.common.CustomString;
 import hierarchyviewerlib.common.IConManager;
 import hierarchyviewerlib.models.LogFileModel;
 
@@ -21,7 +22,7 @@ public class OpenLogFileAction extends Action {
 	
 	public OpenLogFileAction(IWorkbenchWindow window)
 	{
-		setText("打开plist日志");
+		setText(CustomString.getString("ACTION_OPEN_PLIST"));
 		this.window = window;
 		setId(ICommandIds.CMD_OPEN_LOG_FILE);
         // Associate the action with a pre-defined command, to allow key bindings.
@@ -33,7 +34,7 @@ public class OpenLogFileAction extends Action {
 	public void run() {
 		Shell shell=window.getWorkbench().getActiveWorkbenchWindow().getShell();
 		FileDialog fileDialog = new FileDialog(shell);
-		fileDialog.setText("选择要打开的日志文件");
+		fileDialog.setText(CustomString.getString("ACTION_SELECT_PLIST_FILE"));
 		fileDialog.setFilterExtensions(new String[] { "*.plist" });
 		fileDialog.setFilterNames(new String[] { "Textfiles(*.plist)" });
 		String selected = fileDialog.open();

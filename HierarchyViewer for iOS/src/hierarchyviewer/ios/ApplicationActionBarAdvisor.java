@@ -15,6 +15,7 @@ import hierarchyviewerlib.actions.RefreshLogFileAction;
 import hierarchyviewerlib.actions.SaveHierarchyViewPictureAction;
 import hierarchyviewerlib.actions.TerminateAppAction;
 import hierarchyviewerlib.actions.iQueryCreatorDialogAction;
+import hierarchyviewerlib.common.CustomString;
 import hierarchyviewerlib.uicomponents.StatusBar;
 
 import org.eclipse.jface.action.Action;
@@ -59,6 +60,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     private Action openAppAction;
     private Action refreshAppElementAction;
     private Action terminateAppAction;
+    private IWorkbenchAction preferencesAction;
     
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
         super(configurer);
@@ -92,26 +94,27 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         saveHierarchyViewPictureAction = new SaveHierarchyViewPictureAction(window);
         register(saveHierarchyViewPictureAction);
         
+        preferencesAction = ActionFactory.PREFERENCES.create(window);
+        register(preferencesAction);
+        
         //Tools
         iqueryCreatorDialogAction=new iQueryCreatorDialogAction(window);
         
         //Windows
-        openScreenShotViewAction = new OpenViewAction("截屏视图","ScreenShot");
+        openScreenShotViewAction = new OpenViewAction(CustomString.getString("VIEW_SCREENSHOT"),"ScreenShot");
         register(openScreenShotViewAction);
         
-        openHierarchyViewAction = new OpenViewAction("控件树视图","Hierarchy");
+        openHierarchyViewAction = new OpenViewAction(CustomString.getString("VIEW_HIERARCHY"),"Hierarchy");
         register(openHierarchyViewAction);
         
-        openPropertiesViewAction= new OpenViewAction("控件属性视图","Properties");
+        openPropertiesViewAction= new OpenViewAction(CustomString.getString("VIEW_PROPERTIES"),"Properties");
         register(openPropertiesViewAction);
         
-        openHierarchyOverViewAction= new OpenViewAction("控件树缩略视图","HierarchyOverView");
+        openHierarchyOverViewAction= new OpenViewAction(CustomString.getString("VIEW_HIERARCHY_OVERVIEW"),"HierarchyOverView");
         register(openHierarchyOverViewAction);
         
-        TreeViewListViewAction= new OpenViewAction("控件树列表视图","TreeViewList");
+        TreeViewListViewAction= new OpenViewAction(CustomString.getString("VIEW_TREEVIEW_LIST"),"TreeViewList");
         register(TreeViewListViewAction);
-        
-        
         
         aboutAction = ActionFactory.ABOUT.create(window);
         register(aboutAction);
@@ -119,10 +122,10 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     }
     
     protected void fillMenuBar(IMenuManager menuBar) {
-        MenuManager fileMenu = new MenuManager("&文件", IWorkbenchActionConstants.M_FILE);
-        MenuManager toolMenu = new MenuManager("&工具", IWorkbenchActionConstants.M_NAVIGATE);
-        MenuManager windowMenu = new MenuManager("&窗口", IWorkbenchActionConstants.M_WINDOW);
-        MenuManager helpMenu = new MenuManager("&帮助", IWorkbenchActionConstants.M_HELP);
+        MenuManager fileMenu = new MenuManager(CustomString.getString("MENU_FILE"), IWorkbenchActionConstants.M_FILE);
+        MenuManager toolMenu = new MenuManager(CustomString.getString("MENU_TOOL"), IWorkbenchActionConstants.M_NAVIGATE);
+        MenuManager windowMenu = new MenuManager(CustomString.getString("MENU_WINDOW"), IWorkbenchActionConstants.M_WINDOW);
+        MenuManager helpMenu = new MenuManager(CustomString.getString("MENU_HELP"), IWorkbenchActionConstants.M_HELP);
         
         menuBar.add(fileMenu);
         menuBar.add(toolMenu);
@@ -143,6 +146,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         
         fileMenu.add(saveHierarchyViewPictureAction);
         fileMenu.add(new Separator());
+        
+        fileMenu.add(preferencesAction);
         fileMenu.add(exitAction);
         
         //Tools

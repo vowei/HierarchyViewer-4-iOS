@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: hierarchyviewerlib
 Bundle-SymbolicName: hierarchyviewerlib
 Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: hierarchyviewer.ios.GeneralPlugin
 Export-Package: hierarchyviewerlib.actions,
  hierarchyviewerlib.common,
  hierarchyviewerlib.models,

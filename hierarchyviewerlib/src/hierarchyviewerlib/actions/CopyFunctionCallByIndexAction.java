@@ -8,6 +8,7 @@
 package hierarchyviewerlib.actions;
 
 import hierarchyviewerlib.common.ClipboardHelper;
+import hierarchyviewerlib.common.CustomString;
 import hierarchyviewerlib.common.ViewNode;
 import hierarchyviewerlib.controllers.TreeViewController;
 
@@ -19,7 +20,7 @@ public ViewNode mSelectedViewNode;
 	
 	public CopyFunctionCallByIndexAction(ViewNode selectedViewNode)
 	{
-		this.setText("拷贝函数调用路径(索引)");
+		this.setText(CustomString.getString("ACTION_COPY_FUNCTION_CALL_BY_INDEX"));
 		mSelectedViewNode=selectedViewNode;
 	}
 	

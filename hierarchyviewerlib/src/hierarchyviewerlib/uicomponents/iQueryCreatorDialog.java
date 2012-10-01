@@ -51,6 +51,7 @@ import hierarchyviewerlib.controllers.iQueryController.IIQueryInsertListener;
 import hierarchyviewerlib.models.ConfigurationModel;
 import hierarchyviewerlib.models.TreeViewModel;
 import hierarchyviewerlib.common.ClipboardHelper;
+import hierarchyviewerlib.common.CustomString;
 import hierarchyviewerlib.common.MessageBoxManager;
 import hierarchyviewerlib.common.ViewNode;
 import hierarchyviewerlib.common.iQueryElement;
@@ -104,7 +105,7 @@ public class iQueryCreatorDialog extends Dialog implements IIQueryInsertListener
 	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		this.getShell().setText("iQuery生成测试器");
+		this.getShell().setText(CustomString.getString("LABEL_IQUERY_GENERATOR"));
 		
 		final Composite container = (Composite) super.createDialogArea(parent);
 		GridLayout layout = new GridLayout();
@@ -115,7 +116,7 @@ public class iQueryCreatorDialog extends Dialog implements IIQueryInsertListener
 		container.setLayout(layout);
 
 		Label label = new Label(container, SWT.NONE);
-		label.setText("查找开始位置:");
+		label.setText(CustomString.getString("LABEL_IQUERY_SEARCH_BEGIN"));
 		GridData data=new GridData();
 		label.setLayoutData(data);
 		
@@ -123,8 +124,8 @@ public class iQueryCreatorDialog extends Dialog implements IIQueryInsertListener
 		data=new GridData();
 		data.widthHint=120;
 		mStartNodeCombo.setLayoutData(data);
-		mStartNodeCombo.add("根节点");
-		mStartNodeCombo.add("选中节点");
+		mStartNodeCombo.add(CustomString.getString("LABEL_IQUERY_ROOT_NODE"));
+		mStartNodeCombo.add(CustomString.getString("LABEL_IQUERY_SELECTED_NODE"));
 		mStartNodeCombo.select(0);
 		
 		mIQueryStyledText = new StyledText(container, SWT.BORDER);
@@ -137,14 +138,14 @@ public class iQueryCreatorDialog extends Dialog implements IIQueryInsertListener
 		
 		mTestButton = new Button(container, SWT.NONE);
 		mTestButton.addSelectionListener(mTestButton_SelectionAdapter);
-		mTestButton.setText("测试");
+		mTestButton.setText(CustomString.getString("LABEL_IQUERY_TEST"));
 		data=new GridData();
 		data.widthHint=75;
 		mTestButton.setLayoutData(data);
 		
 		mCopyButton = new Button(container, SWT.NONE);
 		mCopyButton.addSelectionListener(mCopyButton_SelectionAdapter);
-		mCopyButton.setText("复制");
+		mCopyButton.setText(CustomString.getString("LABEL_IQUERY_COPY"));
 		data=new GridData();
 		data.widthHint=75;
 		mCopyButton.setLayoutData(data);
@@ -191,7 +192,7 @@ public class iQueryCreatorDialog extends Dialog implements IIQueryInsertListener
 	        	getShell().pack(true);
 	        }
 	      });
-		section1.setText("iQuery元素");
+		section1.setText(CustomString.getString("LABEL_IQUERY_ELEMENT"));
 		
 		Composite subContainer1 = toolkit.createComposite(section1);
 		subContainer1.setLayout(new GridLayout());
@@ -225,11 +226,11 @@ public class iQueryCreatorDialog extends Dialog implements IIQueryInsertListener
 		Menu menu = new Menu(mIQueryStyledText);
 		MenuItem copyMenuItem = new MenuItem(menu, SWT.PUSH); 
     	copyMenuItem.addSelectionListener(copyMenuItem_SelectionListener); 
-    	copyMenuItem.setText("复制");
+    	copyMenuItem.setText(CustomString.getString("LABEL_IQUERY_COPY"));
     	
     	MenuItem selectallMenuItem = new MenuItem(menu, SWT.PUSH); 
 		selectallMenuItem.addSelectionListener(selectallMenuItem_SelectionListener); 
-    	selectallMenuItem.setText("全选"); 
+    	selectallMenuItem.setText(CustomString.getString("LABEL_IQUERY_SELECT_ALL")); 
     	mIQueryStyledText.setMenu(menu);
     }
 	
@@ -269,7 +270,7 @@ public class iQueryCreatorDialog extends Dialog implements IIQueryInsertListener
 		//		true);
 		Button cancelButton = createButton(parent, IDialogConstants.CANCEL_ID,
 				IDialogConstants.CANCEL_LABEL, false);
-		cancelButton.setText("关闭");
+		cancelButton.setText(CustomString.getString("LABEL_IQUERY_CLOSE"));
 	}
 
 	MouseAdapter mIQueryElementTable_MouseAdapternew = new MouseAdapter() {
@@ -410,8 +411,8 @@ public class iQueryCreatorDialog extends Dialog implements IIQueryInsertListener
 			}
 			if(!unsupportedSyntax.isEmpty())
 			{
-				MessageBoxManager.openWarning(true, "警告",
-						String.format("查询中包含：%s 它们可以在iquery中使用，但是HierarchyViewer for iOS无法测试它们。", unsupportedSyntax),mShell);
+				MessageBoxManager.openWarning(true, CustomString.getString("LABEL_IQUERY_WARNING"),
+						String.format(CustomString.getString("LABEL_IQUERY_UNSUPPORT_WARNING"), unsupportedSyntax),mShell);
 				return;
 			}
 			
@@ -430,12 +431,12 @@ public class iQueryCreatorDialog extends Dialog implements IIQueryInsertListener
 			
 			if(errors.size()==0)
 			{
-				mResultLabel.setText(String.format("找到%s个控件", outTreeNodeList.size()));
+				mResultLabel.setText(String.format(CustomString.getString("LABEL_IQUERY_ELEMENT_FOUND"), outTreeNodeList.size()));
 				mTestResultTableViewer.setInput(outTreeNodeList);
 			}
 			else
 			{
-				mResultLabel.setText("查询错误");
+				mResultLabel.setText(CustomString.getString("LABEL_IQUERY_QUERY_ERROR"));
 				mTestResultTableViewer.setInput(errors);
 			}
 		}

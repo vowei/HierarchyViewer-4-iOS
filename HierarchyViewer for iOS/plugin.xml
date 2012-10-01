@@ -25,31 +25,31 @@
             class="hierarchyviewer.ios.views.TreeViewListView"
             icon="icons/list.png"
             id="hierarchyviewer.ios.views.TreeViewListView"
-            name="控件树列表">
+            name="TreeView List">
       </view>
       <view
             class="hierarchyviewer.ios.views.ScreenShotView"
             icon="icons/base_screen.png"
             id="hierarchyviewer.ios.views.ScreenShotView"
-            name="截屏视图">
+            name="Screenshot View">
       </view>
       <view
             class="hierarchyviewer.ios.views.ControlPropertiesView"
             icon="icons/properties.gif"
             id="hierarchyviewer.ios.views.ControlPropertiesView"
-            name="属性视图">
+            name="Properties List">
       </view>
       <view
             class="hierarchyviewer.ios.views.HierarchyView"
             icon="icons/hierarchy_co.gif"
             id="hierarchyviewer.ios.views.HierarchyView"
-            name="控件树视图">
+            name="Hierarchy View">
       </view>
             <view
                   class="hierarchyviewer.ios.views.HierarchyOverView"
                   icon="icons/hierarchy_thumbnail.gif"
                   id="hierarchyviewer.ios.views.HierarchyOverView"
-                  name="控件树缩略图">
+                  name="Hierarchy Overview">
       </view>
    </extension>
    <extension
@@ -57,32 +57,42 @@
       <command
             name="Save hierarchy view as picture"
             description="Save hierarchy view as picture"
-            categoryId="hierarchyviewerlib.SaveHierarchyViewPicture"
             id="hierarchyviewerlib.SaveHierarchyViewPicture">
       </command>
       <command
             name="Open iQueryCreatorDialog"
             description="Open iQueryCreatorDialog"
-            categoryId="hierarchyviewerlib.iQueryCreatorDialog"
             id="hierarchyviewerlib.iQueryCreatorDialog">
       </command>
       <command
             name="Open log file"
             description="Open log file"
-            categoryId="hierarchyviewerlib.OpenLogFile"
             id="hierarchyviewerlib.OpenLogFile">
       </command>
       <command
             name="Refresh log file"
             description="Refresh log file"
-            categoryId="hierarchyviewerlib.RefreshLogFile"
             id="hierarchyviewerlib.RefreshLogFile">
       </command>
       <command
             name="Open views"
             description="Open views"
-            categoryId="hierarchyviewerlib.OpenView"
             id="hierarchyviewerlib.OpenView">
+      </command>
+      <command
+            name="Open App"
+            description="Open App"
+            id="hierarchyviewerlib.OpenApp">
+      </command>
+      <command
+            name="Refresh App Element"
+            description="Refresh App Element"
+            id="hierarchyviewerlib.RefreshAppElement">
+      </command>
+      <command
+            name="Terminate App"
+            description="Terminate App"
+            id="hierarchyviewerlib.TerminateApp">
       </command>
    </extension>
    <extension
@@ -156,5 +166,11 @@
          </property>
       </product>
    </extension>
-
+	<extension
+	         point="org.eclipse.ui.preferencePages">
+	      <page
+	            class="hierarchyviewer.ios.LanguagePreferencePage"
+	            id="hierarchyviewer.ios.LanguagePreferencePage"
+	            name="General"/>
+	</extension>
 </plugin>

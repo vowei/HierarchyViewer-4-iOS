@@ -13,6 +13,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
+import hierarchyviewerlib.common.CustomString;
 import hierarchyviewerlib.uicomponents.PropertyViewer;
 
 
@@ -39,6 +40,8 @@ public class ControlPropertiesView extends ViewPart {
 		createActions();
 		initializeToolBar();
 		initializeMenu();
+		
+		this.setPartName(CustomString.getString("VIEW_PROPERTIES"));
 	}
 
 	/**

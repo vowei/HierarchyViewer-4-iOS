@@ -13,6 +13,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
+import hierarchyviewerlib.common.CustomString;
 import hierarchyviewerlib.uicomponents.LayoutViewer;
 
 import org.eclipse.swt.layout.GridLayout;
@@ -47,6 +48,8 @@ public class ScreenShotView extends ViewPart {
 		createActions();
 		initializeToolBar();
 		initializeMenu();
+		
+		this.setPartName(CustomString.getString("VIEW_SCREENSHOT"));
 	}
 
 	/**

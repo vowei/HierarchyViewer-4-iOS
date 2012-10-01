@@ -14,6 +14,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
+import hierarchyviewerlib.common.CustomString;
 import hierarchyviewerlib.uicomponents.TreeViewOverview;
 
 public class HierarchyOverView extends ViewPart {
@@ -38,6 +39,8 @@ public class HierarchyOverView extends ViewPart {
 		createActions();
 		initializeToolBar();
 		initializeMenu();
+		
+		this.setPartName(CustomString.getString("VIEW_HIERARCHY_OVERVIEW"));
 	}
 
 	/**

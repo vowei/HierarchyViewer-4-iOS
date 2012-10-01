@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 
+import hierarchyviewerlib.common.CustomString;
 import hierarchyviewerlib.common.IConManager;
 import hierarchyviewerlib.models.TreeViewModel;
 import hierarchyviewerlib.uicomponents.TreeView;
@@ -28,7 +29,7 @@ public class SaveHierarchyViewPictureAction extends Action {
 	
 	public SaveHierarchyViewPictureAction(IWorkbenchWindow window)
 	{
-		setText("保存控件树视图");
+		setText(CustomString.getString("ACTION_SAVE_HIERARCHY"));
 		this.window = window;
 		setId(ICommandIds.CMD_SAVE_PICTURE);
         // Associate the action with a pre-defined command, to allow key bindings.
@@ -41,7 +42,7 @@ public class SaveHierarchyViewPictureAction extends Action {
 	  	
 		Shell shell=window.getWorkbench().getActiveWorkbenchWindow().getShell();
 		FileDialog fileDialog = new FileDialog(shell,SWT.SAVE);
-		fileDialog.setText("保存控件层次图");
+		fileDialog.setText(CustomString.getString("ACTION_PICTURE_SAVE_AS"));
 		fileDialog.setFilterExtensions(new String[] { "*.png","*.bmp","*.jpg","*.gif"});
 		fileDialog.setFilterNames(new String[] { "PNG(*.png)","Bitmap(*.bmp)","JPEG(*.jpg),", "GIF(*.gif)" });
 		fileDialog.setFileName("hierarchyview.png");

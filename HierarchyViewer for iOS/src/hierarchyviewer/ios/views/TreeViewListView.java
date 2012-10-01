@@ -7,6 +7,7 @@
 
 package hierarchyviewer.ios.views;
 
+import hierarchyviewerlib.common.CustomString;
 import hierarchyviewerlib.uicomponents.TreeViewListViewer;
 
 import org.eclipse.jface.action.IMenuManager;
@@ -40,6 +41,8 @@ public class TreeViewListView extends ViewPart {
 		createActions();
 		initializeToolBar();
 		initializeMenu();
+		
+		this.setPartName(CustomString.getString("VIEW_TREEVIEW_LIST"));
 	}
 
 	/**

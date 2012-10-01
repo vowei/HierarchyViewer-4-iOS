@@ -1,5 +1,6 @@
 package hierarchyviewerlib.actions;
 
+import hierarchyviewerlib.common.CustomString;
 import hierarchyviewerlib.common.IConManager;
 import hierarchyviewerlib.devicebridge.DeviceBridge;
 
@@ -14,7 +15,7 @@ public class OpenAppAction extends Action {
 	
 	public OpenAppAction(IWorkbenchWindow window)
 	{
-		setText("打开App");
+		setText(CustomString.getString("ACTION_OPEN_APP"));
 		this.window = window;
 		setId(ICommandIds.CMD_OPEN_APP);
         // Associate the action with a pre-defined command, to allow key bindings.
@@ -26,7 +27,7 @@ public class OpenAppAction extends Action {
 	public void run() {
 		Shell shell=window.getWorkbench().getActiveWorkbenchWindow().getShell();
 		FileDialog fileDialog = new FileDialog(shell);
-		fileDialog.setText("选择要打开的App文件");
+		fileDialog.setText(CustomString.getString("ACTION_SELECT_APP_FILE"));
 		fileDialog.setFilterExtensions(new String[] { "*.app" });
 		fileDialog.setFilterNames(new String[] { "AppFiles(*.app)" });
 		String selected = fileDialog.open();

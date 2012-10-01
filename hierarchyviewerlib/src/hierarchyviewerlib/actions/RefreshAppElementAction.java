@@ -1,5 +1,6 @@
 package hierarchyviewerlib.actions;
 
+import hierarchyviewerlib.common.CustomString;
 import hierarchyviewerlib.common.IConManager;
 import hierarchyviewerlib.devicebridge.DeviceBridge;
 
@@ -10,7 +11,7 @@ public class RefreshAppElementAction extends Action {
 
 	public RefreshAppElementAction()
 	{
-		setText("刷新App控件树");
+		setText(CustomString.getString("ACTION_REFRESH_APP"));
 		setId(ICommandIds.CMD_REFRESH_APP_ELEMENT);
         // Associate the action with a pre-defined command, to allow key bindings.
         setActionDefinitionId(ICommandIds.CMD_REFRESH_APP_ELEMENT);

@@ -7,6 +7,7 @@
 
 package hierarchyviewer.ios;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -18,7 +19,7 @@ public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "HierarchyViewer_for_iOS"; //$NON-NLS-1$
-
+	public static final String LANGUAGE_PREFERENCE = "General.Language"; 
 	// The shared instance
 	private static Activator plugin;
 	
@@ -64,5 +65,10 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
+	}
+
+	@Override
+	protected void initializeDefaultPreferences(IPreferenceStore store) {
+		store.setDefault(LANGUAGE_PREFERENCE, "en"); 
 	}
 }

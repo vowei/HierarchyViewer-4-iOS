@@ -7,6 +7,10 @@
 
 package hierarchyviewer.ios;
 
+import hierarchyviewerlib.common.CustomString;
+
+import java.util.Locale;
+
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.swt.widgets.Display;
@@ -24,10 +28,24 @@ public class Application implements IApplication {
 	public Object start(IApplicationContext context) {
 		Display display = PlatformUI.createDisplay();
 		try {
+			//initialize language binhua
+			String langPreference = Activator.getDefault().getPreferenceStore().getString("General.Language");
+			Locale selectedLocale=Locale.ENGLISH;
+			if(langPreference!=null)
+			{
+				if(langPreference.equalsIgnoreCase("cn"))
+				{
+					selectedLocale=Locale.CHINA;
+				}
+			}
+			
+			CustomString.setBundle(selectedLocale);
+			//end binhua
 			int returnCode = PlatformUI.createAndRunWorkbench(display, new ApplicationWorkbenchAdvisor());
 			if (returnCode == PlatformUI.RETURN_RESTART) {
 				return IApplication.EXIT_RESTART;
 			}
+
 			return IApplication.EXIT_OK;
 		} finally {
 			display.dispose();
